@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTE Preposition Master - 100 Câu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; overflow: hidden; }
+        .main-container { max-width: 1800px; margin: 0 auto; padding: 10px 20px; height: 100vh; display: flex; flex-direction: column; }
+        .quiz-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; flex-grow: 1; }
+        .quiz-card { 
+            background: white; border-radius: 12px; padding: 14px; border: 1px solid #e2e8f0; 
+            display: flex; flex-direction: column; justify-content: center; height: 100%;
+        }
+        .explanation { display: none; margin-top: 6px; padding: 8px; background: #f0f4ff; border-left: 4px solid #6366f1; border-radius: 6px; font-size: 0.75rem; }
+        input:disabled { background-color: #f8fafc; color: #475569; border-bottom-color: #cbd5e1; }
+    </style>
+</head>
+<body class="text-slate-900">
+
+    <div class="main-container">
+        <header class="flex justify-between items-center mb-3 bg-white p-3 rounded-xl shadow-sm border border-slate-200">
+            <div>
+                <h1 class="text-lg font-800 text-indigo-900">Preposition Collocation <span class="text-slate-400 font-normal text-sm ml-2">| 100 Sentences Bank</span></h1>
+				<p class="text-slate-500 text-sm">"Động từ KÉO giới từ đi cùng – Danh từ ĐẨY giới từ đứng trước."</p>
+            </div>
+            <div class="flex gap-4 items-center">
+                <div id="status-msg" class="text-xs font-bold text-indigo-600 italic"></div>
+                <div class="bg-indigo-600 text-white px-4 py-1 rounded-lg font-bold text-sm">
+                    Mastered: <span id="mastered-count">0/100</span>
+                </div>
+            </div>
+        </header>
+
+        <div id="quiz-area" class="quiz-grid"></div>
+
+        <div class="py-3 flex justify-center gap-3 bg-f15f9">
+            <button onclick="generateTest()" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-6 py-2 rounded-xl font-bold transition-all text-sm">🔄 Đổi 6 câu mới</button>
+            <button onclick="checkAnswers()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-2 rounded-xl font-bold shadow-lg transition-all active:scale-95 text-sm">🚀 Chấm điểm</button>
+        </div>
+    </div>
+
+    <script>
+        const bank = [
+            { id: 1, q: "Many people are affected ___ fake news.", a: "by", e: "Be affected BY: Bị ảnh hưởng bởi." },
+            { id: 2, q: "The internet provides access ___ information.", a: "to", e: "Access TO: Tiếp cận với." },
+            { id: 3, q: "Connect ___ friends around the world.", a: "with", e: "Connect WITH: Kết nối với." },
+            { id: 4, q: "Focus ___ creating high-quality content.", a: "on", e: "Focus ON: Tập trung vào." },
+            { id: 5, q: "Users depend ___ the internet for news.", a: "on", e: "Depend ON: Phụ thuộc vào." },
+            { id: 6, q: "Protect children ___ negative effects.", a: "from", e: "Protect FROM: Bảo vệ khỏi." },
+            { id: 7, q: "Gain knowledge ___ reading books.", a: "by", e: "By + V-ing: Bằng cách làm gì." },
+            { id: 8, q: "Check ___ the latest information.", a: "for", e: "Check FOR: Kiểm tra tìm cái gì." },
+            { id: 9, q: "Talking ___ the new viral video.", a: "about", e: "Talk ABOUT: Nói về." },
+            { id: 10, q: "She succeeded ___ going viral.", a: "in", e: "Succeed IN: Thành công trong." },
+            { id: 11, q: "Adapt ___ changing technology.", a: "to", e: "Adapt TO: Thích nghi với." },
+            { id: 12, q: "Apologized ___ spreading false news.", a: "for", e: "Apologize FOR: Xin lỗi vì." },
+            { id: 13, q: "Listen ___ my explanation.", a: "to", e: "Listen TO: Lắng nghe." },
+            { id: 14, q: "Believe ___ the power of media.", a: "in", e: "Believe IN: Tin vào." },
+            { id: 15, q: "Apply ___ that job online.", a: "for", e: "Apply FOR: Ứng tuyển." },
+            { id: 16, q: "Consists ___ five main chapters.", a: "of", e: "Consist OF: Bao gồm." },
+            { id: 17, q: "Agree ___ your opinion.", a: "with", e: "Agree WITH: Đồng ý với." },
+            { id: 18, q: "Deal ___ negative comments.", a: "with", e: "Deal WITH: Giải quyết." },
+            { id: 19, q: "Wait ___ me at the station.", a: "for", e: "Wait FOR: Đợi." },
+            { id: 20, q: "Based ___ a true story.", a: "on", e: "Based ON: Dựa trên." },
+            { id: 21, q: "Belongs ___ a media group.", a: "to", e: "Belong TO: Thuộc về." },
+            { id: 22, q: "Complained ___ the service.", a: "about", e: "Complain ABOUT: Phàn nàn về." },
+            { id: 23, q: "Care ___ the environment.", a: "about", e: "Care ABOUT: Quan tâm về." },
+            { id: 24, q: "Laugh ___ the funny video.", a: "at", e: "Laugh AT: Cười vào." },
+            { id: 25, q: "Looking ___ my lost phone.", a: "for", e: "Look FOR: Tìm kiếm." },
+            { id: 26, q: "Good ___ creating content.", a: "at", e: "Good AT: Giỏi về." },
+            { id: 27, q: "Interested ___ social media.", a: "in", e: "Interested IN: Thích thú." },
+            { id: 28, q: "Famous ___ its history.", a: "for", e: "Famous FOR: Nổi tiếng vì." },
+            { id: 29, q: "Afraid ___ losing control.", a: "of", e: "Afraid OF: Sợ." },
+            { id: 30, q: "Worried ___ false news.", a: "about", e: "Worried ABOUT: Lo lắng về." },
+            { id: 31, q: "Arrive ___ the airport.", a: "at", e: "Arrive AT: Đến (địa điểm nhỏ)." },
+            { id: 32, q: "Arrive ___ London.", a: "in", e: "Arrive IN: Đến (thành phố/quốc gia)." },
+            { id: 33, q: "Concentrate ___ your work.", a: "on", e: "Concentrate ON: Tập trung vào." },
+            { id: 34, q: "Participate ___ the meeting.", a: "in", e: "Participate IN: Tham gia vào." },
+            { id: 35, q: "Recover ___ the illness.", a: "from", e: "Recover FROM: Hồi phục từ." },
+            { id: 36, q: "Approve ___ the new plan.", a: "of", e: "Approve OF: Tán thành." },
+            { id: 37, q: "Suffer ___ headaches.", a: "from", e: "Suffer FROM: Chịu đựng." },
+            { id: 38, q: "Object ___ the proposal.", a: "to", e: "Object TO: Phản đối." },
+            { id: 39, q: "Reply ___ the email.", a: "to", e: "Reply TO: Hồi đáp." },
+            { id: 40, q: "Pay ___ the meal.", a: "for", e: "Pay FOR: Trả tiền cho." },
+            { id: 41, q: "Borrow money ___ the bank.", a: "from", e: "Borrow FROM: Mượn từ." },
+            { id: 42, q: "Search ___ the solution.", a: "for", e: "Search FOR: Tìm kiếm." },
+            { id: 43, q: "Smile ___ the camera.", a: "at", e: "Smile AT: Mỉm cười với." },
+            { id: 44, q: "Remind me ___ the meeting.", a: "of", e: "Remind OF: Gợi nhớ về." },
+            { id: 45, q: "Compare this ___ that.", a: "with", e: "Compare WITH: So sánh với." },
+            { id: 46, q: "Contribute ___ the project.", a: "to", e: "Contribute TO: Đóng góp cho." },
+            { id: 47, q: "Accuse him ___ lying.", a: "of", e: "Accuse OF: Buộc tội." },
+            { id: 48, q: "Congratulate her ___ her success.", a: "on", e: "Congratulate ON: Chúc mừng vì." },
+            { id: 49, q: "Specialize ___ marketing.", a: "in", e: "Specialize IN: Chuyên về." },
+            { id: 50, q: "Graduate ___ university.", a: "from", e: "Graduate FROM: Tốt nghiệp từ." },
+            { id: 51, q: "Involved ___ the scandal.", a: "in", e: "Involved IN: Liên quan đến." },
+            { id: 52, q: "Different ___ the others.", a: "from", e: "Different FROM: Khác với." },
+            { id: 53, q: "Similar ___ mine.", a: "to", e: "Similar TO: Tương tự với." },
+            { id: 54, q: "Proud ___ her son.", a: "of", e: "Proud OF: Tự hào về." },
+            { id: 55, q: "Full ___ energy.", a: "of", e: "Full OF: Đầy." },
+            { id: 56, q: "Aware ___ the danger.", a: "of", e: "Aware OF: Nhận thức về." },
+            { id: 57, q: "Tired ___ waiting.", a: "of", e: "Tired OF: Mệt mỏi vì." },
+            { id: 58, q: "Responsible ___ the project.", a: "for", e: "Responsible FOR: Chịu trách nhiệm." },
+            { id: 59, q: "Keen ___ football.", a: "on", e: "Keen ON: Đam mê." },
+            { id: 60, q: "Capable ___ doing it.", a: "of", e: "Capable OF: Có khả năng." },
+            { id: 61, q: "Bored ___ the movie.", a: "with", e: "Bored WITH: Chán với." },
+            { id: 62, q: "Excited ___ the trip.", a: "about", e: "Excited ABOUT: Hào hứng về." },
+            { id: 63, q: "Ashamed ___ himself.", a: "of", e: "Ashamed OF: Hổ thẹn về." },
+            { id: 64, q: "Addicted ___ games.", a: "to", e: "Addicted TO: Nghiện." },
+            { id: 65, q: "Allergic ___ seafood.", a: "to", e: "Allergic TO: Dị ứng với." },
+            { id: 66, q: "Amazed ___ the view.", a: "at", e: "Amazed AT: Kinh ngạc bởi." },
+            { id: 67, q: "Angry ___ the results.", a: "at", e: "Angry AT: Giận dữ vì (việc gì)." },
+            { id: 68, q: "Angry ___ him.", a: "with", e: "Angry WITH: Giận dữ với (ai)." },
+            { id: 69, q: "Bad ___ math.", a: "at", e: "Bad AT: Tệ về." },
+            { id: 70, q: "Crowded ___ people.", a: "with", e: "Crowded WITH: Đông đúc." },
+            { id: 71, q: "Dissatisfied ___ the service.", a: "with", e: "Dissatisfied WITH: Không hài lòng." },
+            { id: 72, q: "Familiar ___ this area.", a: "with", e: "Familiar WITH: Quen thuộc với." },
+            { id: 73, q: "Friendly ___ everyone.", a: "with", e: "Friendly WITH: Thân thiện với." },
+            { id: 74, q: "Generous ___ his time.", a: "with", e: "Generous WITH: Hào phóng với." },
+            { id: 75, q: "Guilty ___ the crime.", a: "of", e: "Guilty OF: Có tội." },
+            { id: 76, q: "Hopeful ___ the future.", a: "of", e: "Hopeful OF: Hy vọng về." },
+            { id: 77, q: "Identical ___ the original.", a: "to", e: "Identical TO: Giống hệt." },
+            { id: 78, q: "Impressed ___ the performance.", a: "by", e: "Impressed BY: Ấn tượng bởi." },
+            { id: 79, q: "Independent ___ his parents.", a: "of", e: "Independent OF: Độc lập khỏi." },
+            { id: 80, q: "Jealous ___ her success.", a: "of", e: "Jealous OF: Ghen tị với." },
+            { id: 81, q: "Kind ___ animals.", a: "to", e: "Kind TO: Tử tế với." },
+            { id: 82, q: "Married ___ a doctor.", a: "to", e: "Married TO: Kết hôn với." },
+            { id: 83, q: "Opposed ___ the idea.", a: "to", e: "Opposed TO: Phản đối." },
+            { id: 84, q: "Patient ___ the children.", a: "with", e: "Patient WITH: Kiên nhẫn với." },
+            { id: 85, q: "Polite ___ customers.", a: "to", e: "Polite TO: Lịch sự với." },
+            { id: 86, q: "Popular ___ teenagers.", a: "with", e: "Popular WITH: Phổ biến với." },
+            { id: 87, q: "Relevant ___ the topic.", a: "to", e: "Relevant TO: Liên quan đến." },
+            { id: 88, q: "Safe ___ danger.", a: "from", e: "Safe FROM: An toàn khỏi." },
+            { id: 89, q: "Satisfied ___ the progress.", a: "with", e: "Satisfied WITH: Hài lòng với." },
+            { id: 90, q: "Sensitive ___ light.", a: "to", e: "Sensitive TO: Nhạy cảm với." },
+            { id: 91, q: "Short ___ money.", a: "of", e: "Short OF: Thiếu." },
+            { id: 92, q: "Sorry ___ the delay.", a: "for", e: "Sorry FOR: Xin lỗi vì." },
+            { id: 93, q: "Successful ___ his career.", a: "in", e: "Successful IN: Thành công trong." },
+            { id: 94, q: "Sure ___ his facts.", a: "of", e: "Sure OF: Chắc chắn về." },
+            { id: 95, q: "Surprised ___ the news.", a: "at", e: "Surprised AT: Ngạc nhiên bởi." },
+            { id: 96, q: "Terrible ___ sports.", a: "at", e: "Terrible AT: Rất tệ về." },
+            { id: 97, q: "Useful ___ beginners.", a: "for", e: "Useful FOR: Có ích cho." },
+            { id: 98, q: "Wrong ___ her.", a: "with", e: "Wrong WITH: Có vấn đề với." },
+            { id: 99, q: "Account ___ the loss.", a: "for", e: "Account FOR: Giải thích cho." },
+            { id: 100, q: "Voted ___ the leader.", a: "for", e: "Vote FOR: Bầu cho." }
+        ];
+
+        let stats = JSON.parse(localStorage.getItem('prep_stats_100')) || {};
+        bank.forEach(item => { if(!stats[item.id]) stats[item.id] = { best: 0 } });
+
+        let currentQuestions = [];
+
+        function generateTest() {
+            const area = document.getElementById('quiz-area');
+            area.innerHTML = '';
+            
+            let pool = bank.map(q => ({...q, score: stats[q.id].best}))
+                           .sort((a, b) => a.score - b.score);
+            
+            currentQuestions = pool.slice(0, 15).sort(() => Math.random() - 0.5).slice(0, 6);
+
+            currentQuestions.forEach((q, index) => {
+                area.insertAdjacentHTML('beforeend', `
+                    <div class="quiz-card shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Q${q.id}</span>
+                            <span id="pill-${index}" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-400">WAITING</span>
+                        </div>
+                        <div class="text-slate-800 font-semibold text-lg py-2">
+                            ${q.q.replace("___", `<input type="text" id="blank-${index}" class="mx-1 border-b-3 border-indigo-400 outline-none text-center text-indigo-700 focus:border-indigo-600 w-24 bg-transparent transition-colors" placeholder="..." autocomplete="off">`)}
+                        </div>
+                        <div id="exp-${index}" class="explanation"></div>
+                    </div>
+                `);
+            });
+            document.getElementById('status-msg').innerText = "Đã tải 6 câu ngẫu nhiên.";
+        }
+
+        function checkAnswers() {
+            let sessionScore = 0;
+            currentQuestions.forEach((q, index) => {
+                const input = document.getElementById(`blank-${index}`);
+                const userVal = input.value.trim().toLowerCase();
+                const isCorrect = userVal === q.a.toLowerCase();
+
+                if (isCorrect) {
+                    sessionScore++;
+                    stats[q.id].best = 1;
+                }
+
+                const pill = document.getElementById(`pill-${index}`);
+                pill.innerText = isCorrect ? "CORRECT" : "WRONG";
+                pill.className = `text-[10px] font-bold px-2 py-0.5 rounded ${isCorrect ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`;
+                
+                const exp = document.getElementById(`exp-${index}`);
+                exp.style.display = 'block';
+                exp.innerHTML = `<strong>Đáp án: ${q.a}</strong><br>${q.e}`;
+                
+                input.disabled = true;
+            });
+
+            localStorage.setItem('prep_stats_100', JSON.stringify(stats));
+            updateHeader();
+            document.getElementById('status-msg').innerText = `Kết quả lượt này: ${sessionScore}/6`;
+        }
+
+        function updateHeader() {
+            const mastered = Object.values(stats).filter(s => s.best === 1).length;
+            document.getElementById('mastered-count').innerText = `${mastered}/100`;
+        }
+
+        generateTest();
+        updateHeader();
+    </script>
+</body>
+</html>
